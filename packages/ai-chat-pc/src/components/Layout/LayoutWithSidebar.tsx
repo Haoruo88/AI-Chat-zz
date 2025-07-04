@@ -15,7 +15,12 @@ export function LayoutWithSidebar() {
           collapsed ? 'w-10' : 'w-64'
         } bg-gray-50 border-r border-gray-200 transition-all duration-300 flex flex-col overflow-y-scroll`}>
         <div className="flex justify-between items-center p-2 border-b border-gray-200 bg-gray-50">
-          {!collapsed && <img src="/gpt.jpg" alt="GPT Logo" className="w-8 h-8" />}
+          {!collapsed && (
+            <div className="flex items-center">
+              <img src="/gpt.jpg" alt="GPT Logo" className="w-8 h-8" />
+              <span className="ml-2 font-medium text-gray-800">AI Chat</span>
+            </div>
+          )}
           <div className="flex items-center">
             {collapsed ? (
               <MenuUnfoldOutlined
