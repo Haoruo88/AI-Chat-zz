@@ -299,24 +299,30 @@ const AIRichInput = () => {
 
   const sendMessage = async (
     chatId: string,
-    message: string,
+    _message: string,
     // images?: string[],
     fileId?: string
   ) => {
-    await sendChatMessage({
-      id: chatId,
-      message,
-      // imgUrl: images,
-      fileId
-    })
-    // .finally(() => {
-    //   setSelectedImages([])
-    // })
+    try {
+      await sendChatMessage({
+        id: chatId,
+        message: _message,
+        // imgUrl: images,
+        fileId
+      })
+    } catch (error) {
+      setInputLoading(false)
+      message.error('消息发送失败')
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close()
+        eventSourceRef.current = null
+      }
+    }
   }
 
   const createSSEAndSendMessage = (
     chatId: string,
-    message: string,
+    _message: string,
     // images?: string[],
     fileId?: string
   ) => {
@@ -343,9 +349,13 @@ const AIRichInput = () => {
           content = ''
         } else if (data.type === 'error') {
           console.error('SSE连接错误:', data.error)
+          setInputLoading(false)
+          message.error('消息发送失败')
         }
       } catch (error) {
         console.log('解析消息失败', error)
+        setInputLoading(false)
+        message.error('消息处理失败')
       }
     }
 
@@ -353,9 +363,11 @@ const AIRichInput = () => {
       console.error('SSE连接错误:', error)
       eventSourceRef.current?.close()
       eventSourceRef.current = null
+      setInputLoading(false)
+      message.error('连接服务器失败')
     }
 
-    sendMessage(chatId, message, fileId)
+    sendMessage(chatId, _message, fileId)
   }
 
   const submitMessage = async (message: string) => {
