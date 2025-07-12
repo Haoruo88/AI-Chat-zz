@@ -13,6 +13,8 @@
   "dependencies": {
     "@types/react-transition-group": "^4.4.12",
     "clsx": "^2.1.1",
+    "highlight.js": "^11.11.1",
+    "react-markdown": "^10.1.0",
     "react-transition-group": "^4.4.5",
     "tailwind-merge": "^3.3.0"
   }
