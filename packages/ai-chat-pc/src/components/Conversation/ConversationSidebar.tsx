@@ -1,4 +1,4 @@
-import { MoreOutlined, MessageOutlined, SearchOutlined, RobotOutlined } from '@ant-design/icons'
+import { MoreOutlined, SearchOutlined, RobotOutlined, PlusOutlined } from '@ant-design/icons'
 import { Dropdown, Input } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -151,10 +151,10 @@ export function ConversationSidebar() {
         <button
           className="flex items-center gap-2 px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors w-full"
           onClick={() => handleAddConversation()}>
-          <MessageOutlined />
+          <PlusOutlined />
           <span>新对话</span>
         </button>
-        <button
+        {/* <button
           className="flex items-center gap-2 px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors w-full"
           onClick={() => navigate('/agents')}>
           <RobotOutlined />
@@ -165,9 +165,10 @@ export function ConversationSidebar() {
           onClick={() => setIsSearchOpen(true)}>
           <SearchOutlined />
           <span>搜索记录</span>
-        </button>
+        </button> */}
         <SearchButton isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       </div>
+      <div className="mb-2 px-2 text-gray-400 text-sm">历史对话</div>
       <ul className="space-y-2 overflow-hidden text-ellipsis">
         {conversations.map((conv) => (
           <li
