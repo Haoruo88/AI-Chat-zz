@@ -1,6 +1,8 @@
+/* eslint-disable import/order */
 import { LinkOutlined } from '@ant-design/icons'
 import { Attachments, Sender } from '@ant-design/x'
-import { Button, message, Spin, type GetRef } from 'antd'
+import { Button, message, Progress, Spin, type GetRef } from 'antd'
+import type { RcFile } from 'antd/es/upload'
 import React from 'react'
 import { useRef, useState } from 'react'
 import SparkMD5 from 'spark-md5'
@@ -16,8 +18,6 @@ import { sessionApi } from '@pc/apis/session'
 import { BASE_URL, DEFAULT_MESSAGE } from '@pc/constant'
 import { useChatStore, useConversationStore } from '@pc/store'
 import { isImageByExtension } from '@pc/utils/judgeImage'
-
-import type { RcFile } from 'antd/es/upload'
 
 // 切片的大小 - 使用2MB分片大小以提高上传效率
 const CHUNK_SIZE = 1024 * 1024 * 2
@@ -39,17 +39,15 @@ const AIRichInput = () => {
   const abortControllerRef = useRef<AbortController | null>(null)
   const idRef = useRef<string | null>(null)
   const eventSourceRef = useRef<EventSource | null>(null)
-  const uploadedChunksRef = useRef<number[]>([])
-  const fileChunksRef = useRef<ChunkInfo[]>([])
+  const uploadedChunksRef = useRef<number[]>([]) // 已上传的分片索引数组
+  const fileChunksRef = useRef<ChunkInfo[]>([]) // 总文件分片数组
   const fileIdRef = useRef<string | null>(null)
   const fileNameRef = useRef<string | null>(null)
   const filePathRef = useRef<string | null>(null)
+  const [uploadProgress, setUploadProgress] = useState(0)
 
   const { messages, addMessage, addChunkMessage } = useChatStore()
   const { selectedId, setSelectedId, addConversation } = useConversationStore()
-  // const [selectedImages, setSelectedImages] = useState<string[]>([])
-
-  // const isImageRef = useRef(false)
 
   // 创建文件分片
   const createFileChunks = (file: File): ChunkInfo[] => {
@@ -74,11 +72,11 @@ const AIRichInput = () => {
     return new Promise((resolve, reject) => {
       const spark = new SparkMD5.ArrayBuffer()
       const reader = new FileReader()
-      reader.readAsArrayBuffer(chunk)
+      reader.readAsArrayBuffer(chunk) // 读取分片内容: 将Blob转换为ArrayBuffer
       reader.onload = (e) => {
         if (e.target?.result) {
-          spark.append(e.target.result as ArrayBuffer)
-          resolve(spark.end())
+          spark.append(e.target.result as ArrayBuffer) // 将ArrayBuffer添加到SparkMD5实例中
+          resolve(spark.end()) // 计算最终的hash值
         } else {
           reject(new Error('Failed to read chunk'))
         }
@@ -144,6 +142,14 @@ const AIRichInput = () => {
 
       if (response) {
         uploadedChunksRef.current.push(chunk.index)
+        // 添加进度更新逻辑
+        const totalChunks = fileChunksRef.current.length
+        const updateProgress = () => {
+          const completedChunks = uploadedChunksRef.current.length
+          const progress = Math.floor((completedChunks / totalChunks) * 100)
+          setUploadProgress(progress)
+        }
+        updateProgress() // 更新进度
         return true
       } else {
         return false
@@ -259,10 +265,6 @@ const AIRichInput = () => {
           console.log('文件合并成功:', mergedFileName, filePath)
 
           filePathRef.current = filePath
-          // if (isImageRef.current) {
-          //   const imageUrl = `${BASE_URL}${filePath}`
-          //   setSelectedImages((prev) => [...prev, imageUrl])
-          // }
 
           message.success('文件上传完成！')
         } else {
@@ -313,6 +315,7 @@ const AIRichInput = () => {
     } catch (error) {
       setInputLoading(false)
       message.error('消息发送失败')
+      console.log('消息发送失败', error)
       if (eventSourceRef.current) {
         eventSourceRef.current.close()
         eventSourceRef.current = null
@@ -451,15 +454,18 @@ const AIRichInput = () => {
       <Spin
         spinning={isLoading}
         tip={
-          <span
-            style={{
-              fontSize: '12px',
-              color: '#ff4f39',
-              cursor: 'pointer'
-            }}
-            onClick={cancleUpload}>
-            点击取消
-          </span>
+          <>
+            <Progress percent={uploadProgress} size="small" status="active" />
+            <span
+              style={{
+                fontSize: '12px',
+                color: '#ff4f39',
+                cursor: 'pointer'
+              }}
+              onClick={cancleUpload}>
+              点击取消
+            </span>
+          </>
         }>
         <Attachments
           ref={attachmentsRef}
