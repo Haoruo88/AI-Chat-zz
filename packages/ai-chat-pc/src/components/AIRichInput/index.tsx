@@ -504,7 +504,8 @@ const AIRichInput = () => {
   return (
     <React.Fragment>
       <div
-        className={`fixed w-1/2 z-50 ${!selectedId ? 'bottom-1/2' : 'bottom-0'} pb-[30px] bg-white`}>
+        className={`fixed w-1/2 z-50 ${!selectedId ? 'bottom-1/2' : 'bottom-0'} pb-[30px]`}
+        style={{ backgroundColor: 'var(--color-bg-primary)' }}>
         {showDefaultMessage()}
         <Sender
           header={senderHeader}

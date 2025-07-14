@@ -1,0 +1,53 @@
+/* packages/ai-chat-pc/src/styles/theme-variables.css */
+:root {
+  /* 基础颜色 */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f5f5f5;
+  --color-bg-tertiary: #fafafa;
+  
+  /* 文本颜色 */
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-text-tertiary: #999999;
+  
+  /* 边框颜色 */
+  --color-border: #e0e0e0;
+  --color-border-light: #f0f0f0;
+  
+  /* 交互颜色 */
+  --color-accent: #1890ff;
+  --color-success: #52c41a;
+  --color-warning: #faad14;
+  --color-error: #f5222d;
+  
+  /* 阴影 */
+  --shadow-default: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 暗色主题变量 */
+html.dark {
+  /* 基础颜色 */
+  --color-bg-primary: #121212;
+  --color-bg-secondary: #1e1e1e;
+  --color-bg-tertiary: #2d2d2d;
+  
+  /* 文本颜色 */
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: #a0a0a0;
+  --color-text-tertiary: #777777;
+  
+  /* 边框颜色 */
+  --color-border: #333333;
+  --color-border-light: #444444;
+  
+  /* 交互颜色 */
+  --color-accent: #177ddc;
+  --color-success: #49aa19;
+  --color-warning: #d89614;
+  --color-error: #d32029;
+  
+  /* 阴影 */
+  --shadow-default: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.6);
+}

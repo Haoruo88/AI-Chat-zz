@@ -45,7 +45,6 @@ export function ConversationSidebar() {
     {
       key: 'rename',
       label: '重命名',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onClick: (e: any) => {
         e.domEvent.stopPropagation()
         startEdit(id, title)
@@ -54,7 +53,6 @@ export function ConversationSidebar() {
     {
       key: 'share',
       label: '分享',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onClick: (e: any) => {
         e.domEvent.stopPropagation()
         handleShare(id)
@@ -64,7 +62,6 @@ export function ConversationSidebar() {
       key: 'delete',
       label: '删除',
       danger: true,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onClick: (e: any) => {
         e.domEvent.stopPropagation()
         handleDelete(id)
@@ -145,11 +142,42 @@ export function ConversationSidebar() {
     })
   }
 
+  // 使用CSS变量定义的样式
+  const buttonStyle = {
+    color: 'var(--color-text-primary)',
+    ':hover': {
+      backgroundColor: 'var(--color-bg-secondary)'
+    }
+  }
+
+  const historyLabelStyle = {
+    color: 'var(--color-text-tertiary)'
+  }
+
+  const conversationItemStyle = (isSelected: boolean) => ({
+    backgroundColor: isSelected ? 'var(--color-bg-secondary)' : 'transparent',
+    ':hover': {
+      backgroundColor: 'var(--color-bg-secondary)'
+    }
+  })
+
+  const conversationTextStyle = {
+    color: 'var(--color-text-primary)'
+  }
+
+  const moreIconStyle = {
+    color: 'var(--color-text-tertiary)',
+    ':hover': {
+      color: 'var(--color-text-primary)'
+    }
+  }
+
   return (
     <div className="p-4">
       <div className="mb-4 flex flex-col gap-2">
         <button
-          className="flex items-center gap-2 px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors w-full"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors w-full"
+          style={buttonStyle}
           onClick={() => handleAddConversation()}>
           <PlusOutlined />
           <span>新对话</span>
@@ -168,14 +196,15 @@ export function ConversationSidebar() {
         </button> */}
         <SearchButton isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       </div>
-      <div className="mb-2 px-2 text-gray-400 text-sm">历史对话</div>
+      <div className="mb-2 px-2 text-sm" style={historyLabelStyle}>
+        历史对话
+      </div>
       <ul className="space-y-2 overflow-hidden text-ellipsis">
         {conversations.map((conv) => (
           <li
             key={conv.id}
-            className={`p-2 hover:bg-gray-100 rounded cursor-pointer flex justify-between items-center ${
-              selectedId === conv.id ? 'bg-gray-200' : ''
-            }`}
+            className="p-2 rounded cursor-pointer flex justify-between items-center transition-colors"
+            style={conversationItemStyle(selectedId === conv.id)}
             onClick={() => handleConversationClick(conv.id)}>
             {editingId === conv.id ? (
               <Input
@@ -186,11 +215,14 @@ export function ConversationSidebar() {
                 autoFocus
               />
             ) : (
-              <div className="truncate text-gray-700">{conv.title}</div>
+              <div className="truncate" style={conversationTextStyle}>
+                {conv.title}
+              </div>
             )}
             <Dropdown menu={{ items: items(conv.id, conv.title) }} trigger={['click']}>
               <MoreOutlined
-                className="ml-2 text-gray-500 hover:text-gray-700"
+                className="ml-2 hover:text-gray-700"
+                style={moreIconStyle}
                 onClick={(e) => e.stopPropagation()}
               />
             </Dropdown>
